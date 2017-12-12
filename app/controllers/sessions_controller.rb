@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
       if @authorization
         render :text => "Welcome back #{@authorization.user.name}! You have already signed up!"
       else
-        user = User.new :name => auth_hash["user_info"]["name"], :email => auth_hash["user_info"]["email"]
+        user = User.new :name => auth_hash["info"]["name"], :email => auth_hash["info"]["email"]
         user.authorizations.build :provider => auth_hash["provider"], :uid => auth_hash["uid"]
       user.save
       render :text => "Hi #{user.name}! You've signed up."
@@ -16,5 +16,10 @@ class SessionsController < ApplicationController
   end
 
   def failure
+    render :text => "Sorry, but you didn't allow access to our app!"
+  end
+  def destroy
+    session[:user_id] = nil
+    render :text => "You've logged out!"
   end
 end
